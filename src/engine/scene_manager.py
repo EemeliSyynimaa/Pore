@@ -45,6 +45,6 @@ class SceneManager(object):
         if self.active_scenes:
             self.active_scenes[-1].update(dt)
     
-    def on_draw(self):
+    def draw(self):
         for scene in self.active_scenes:
-            scene.on_draw()
+            scene.draw()

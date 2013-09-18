@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import pyglet
-import resource_manager
 
 class Scene(object):
     """ Scene class! """
@@ -9,7 +8,6 @@ class Scene(object):
     def __init__(self, manager):
         self.manager = manager
         self.batch = pyglet.graphics.Batch()
-        self.res = resource_manager.ResourceManager()
         
     def on_key_press(self, symbol, modifiers):
         pass
@@ -47,8 +45,8 @@ class Scene(object):
     def on_text_motion_select(self, motion):
         pass
     
-    def on_draw(self):
-        self.batch.draw()
+    def draw(self):
+        pass
         
     def update(self, dt):
         pass

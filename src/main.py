@@ -23,7 +23,7 @@ class App(object):
         self.engine.run()
         
     def init_resources(self):
-        self.engine.add_resource_path('gfx')
+        pass
         
     def init_scenes(self):
         self.engine.scene_manager.add_scene('game', game.Game)
