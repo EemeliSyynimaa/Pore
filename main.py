@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from engine import engine
+__author__ = 'eeneku'
 
-# Import scenes
-from scenes import game
+from engine import engine
 
 
 class App(object):
@@ -27,8 +26,8 @@ class App(object):
         self.engine.add_resource_path('gfx')
         
     def init_scenes(self):
-        self.engine.scene_manager.add_scene('game', game.Game)
-        self.engine.scene_manager.activate_scene('game',
+        self.engine.scene_manager.init_scenes()
+        self.engine.scene_manager.activate_scene('home',
                                                  self.screen_w,
                                                  self.screen_h)
 

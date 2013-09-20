@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
+__author__ = 'eeneku'
 
-import resource_manager
+import scenes
 
 
 class SceneManager(object):
@@ -10,7 +10,11 @@ class SceneManager(object):
         self.scenes = {}
         self.active_scenes = []
         self.engine = engine
-        self.res = None
+
+    def init_scenes(self):
+        for main_scene in scenes.main_scenes:
+            for scene in main_scene:
+                self.add_scene(scene, main_scene[scene])
 
     def add_scene(self, name, scene):
         self.scenes[name] = scene
@@ -25,8 +29,6 @@ class SceneManager(object):
                 
             self.active_scenes = []
 
-            self.res = resource_manager.ResourceManager()
-            
             self.active_scenes.append(self.scenes[scene](self, *args, **kwargs))
             self.engine.push_handlers(self.active_scenes[-1])
             

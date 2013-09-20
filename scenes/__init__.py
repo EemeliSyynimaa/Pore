@@ -1,1 +1,6 @@
-__all__ = ["game"]
+__author__ = 'eeneku'
+
+import game
+import menu
+
+main_scenes = [game.scenes, menu.scenes]
