@@ -3,4 +3,4 @@ __author__ = 'eeneku'
 import game
 import menu
 
-main_scenes = [game.scenes, menu.scenes]
+main_states = {"game": game, "menu": menu}

@@ -2,7 +2,7 @@ __author__ = 'eeneku'
 
 import pyglet
 
-import scene_manager
+import state_manager
 
 
 class Engine(pyglet.window.Window):
@@ -10,7 +10,7 @@ class Engine(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super(Engine, self).__init__(*args, **kwargs)
         
-        self.scene_manager = scene_manager.SceneManager(engine=self)
+        self.state_manager = state_manager.StateManager(engine=self)
         self.fps = pyglet.clock.ClockDisplay()
         
         pyglet.clock.schedule_interval(self.update, 1/120.0)
@@ -20,12 +20,12 @@ class Engine(pyglet.window.Window):
         pyglet.resource.reindex()
     
     def update(self, dt):
-        self.scene_manager.update(dt)
+        self.state_manager.update(dt)
     
     def run(self):
         pyglet.app.run()
         
     def on_draw(self):
         self.clear()
-        self.scene_manager.draw()
+        self.state_manager.draw()
         self.fps.draw()

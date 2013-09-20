@@ -26,11 +26,7 @@ class App(object):
         self.engine.add_resource_path('gfx')
         
     def init_scenes(self):
-        self.engine.scene_manager.init_scenes()
-        self.engine.scene_manager.activate_scene('home',
-                                                 self.screen_w,
-                                                 self.screen_h)
-
+        self.engine.state_manager.activate('menu')
 
 if __name__ == '__main__':
     app = App()  

@@ -1,16 +1,13 @@
 __author__ = 'eeneku'
 
-from engine import scene
+from engine import state
 
 
-class Home(scene.Scene):
+class Home(state.State):
     """ The home (main menu) scene. """
 
-    def __init__(self, manager, screen_w, screen_h):
+    def __init__(self, manager):
         super(Home, self).__init__(manager)
-
-        self.screen_w = screen_w
-        self.screen_h = screen_h
 
         self.init_resources()
 

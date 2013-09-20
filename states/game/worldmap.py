@@ -1,16 +1,13 @@
 __author__ = 'eeneku'
 
-from engine import scene
+from engine import state
 
 
-class WorldMap(scene.Scene):
-    """ The World Map scene. """
+class WorldMap(state.State):
+    """ The World Map state. """
 
-    def __init__(self, manager, screen_w, screen_h):
+    def __init__(self, manager):
         super(WorldMap, self).__init__(manager)
-
-        self.screen_w = screen_w
-        self.screen_h = screen_h
 
         self.init_resources()
 

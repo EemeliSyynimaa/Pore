@@ -3,7 +3,7 @@ __author__ = 'eeneku'
 import pyglet
 
 
-class Scene(object):
+class State(object):
     """ Scene class! """
 
     def __init__(self, manager):
