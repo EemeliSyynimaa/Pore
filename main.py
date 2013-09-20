@@ -5,6 +5,7 @@ __author__ = 'eeneku'
 
 from engine import engine
 
+import states
 
 class App(object):
     """ The main class that ties everything together. """
@@ -18,15 +19,18 @@ class App(object):
                                     fullscreen=False)
         
         self.init_resources()
-        self.init_scenes()
+        self.init_states()
         
         self.engine.run()
         
     def init_resources(self):
         self.engine.add_resource_path('gfx')
         
-    def init_scenes(self):
-        self.engine.state_manager.activate('menu')
+    def init_states(self):
+        self.engine.state_manager.add('world_map', states.WorldMap)
+        self.engine.state_manager.add('main_menu', states.MainMenu)
+        self.engine.state_manager.add('local_map', states.LocalMap)
+        self.engine.state_manager.change('main_menu')
 
 if __name__ == '__main__':
     app = App()  

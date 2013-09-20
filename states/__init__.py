@@ -1,6 +1,7 @@
 __author__ = 'eeneku'
 
-import game
-import menu
+from mainmenu import MainMenu
+from worldmap import WorldMap
+from localmap import LocalMap
 
-main_states = {"game": game, "menu": menu}
+__all__ = [MainMenu, WorldMap, LocalMap]
