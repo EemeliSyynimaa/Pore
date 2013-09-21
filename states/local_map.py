@@ -9,8 +9,8 @@ class LocalMap(state.State):
     The local map state.
     """
 
-    def __init__(self, manager):
-        super(LocalMap, self).__init__(manager)
+    def __init__(self, *args, **kwargs):
+        super(LocalMap, self).__init__(*args, **kwargs)
 
         self.init_resources()
 

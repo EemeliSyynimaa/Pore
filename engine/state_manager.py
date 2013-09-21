@@ -23,7 +23,8 @@ class StateManager(object):
                 
             self.active_states = []
 
-            self.active_states.append(self.states[state](self, *args, **kwargs))
+            self.active_states.append(self.states[state](self, self.engine,
+                                                         *args, **kwargs))
             self.engine.push_handlers(self.active_states[-1])
             
     def push(self, state, *args, **kwargs):

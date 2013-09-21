@@ -9,8 +9,9 @@ class State(object):
     This class represents one state (screen) in the game.
     """
 
-    def __init__(self, manager):
+    def __init__(self, manager, engine):
         self.manager = manager
+        self.engine = engine
         self.batch = pyglet.graphics.Batch()
         
     def on_key_press(self, symbol, modifiers):

@@ -19,7 +19,8 @@ class App(object):
         
         self.engine = engine.Engine(width=self.screen_w, 
                                     height=self.screen_h,
-                                    fullscreen=False)
+                                    fullscreen=False,
+                                    vsync=False)
         
         self.init_resources()
         self.init_states()

@@ -16,6 +16,8 @@ class Engine(pyglet.window.Window):
         
         self.state_manager = state_manager.StateManager(engine=self)
         self.fps = pyglet.clock.ClockDisplay()
+        self.keys = pyglet.window.key.KeyStateHandler()
+        self.push_handlers(self.keys)
         
         pyglet.clock.schedule(self.update)
 

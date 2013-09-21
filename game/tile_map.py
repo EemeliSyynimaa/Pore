@@ -46,11 +46,8 @@ class TileMap(object):
         self.view_width = width
         self.view_height = height
 
-    def update(self):
-        vertex_data = []
-        texture_data = []
-        color_data = []
-        vertices = 0
+    def update_view(self):
+        self.batch = pyglet.graphics.Batch()
 
         for y in range(self.height):
             y1 = self.view_y + (self.height*self.tile_height) - (self.tile_height * y)
@@ -62,19 +59,13 @@ class TileMap(object):
 
                 for layer in reversed(self.layers):
                     if layer.type == 'tilelayer' and (x, y) in layer.data:
-                        vertex_data.extend([x1, y2, x2, y2, x2, y1, x1, y1])
-                        texture_data.extend(self.tile_set_bin.get_tex_coords(layer.get_gid((x, y))))
-                        color_data.extend((255, 255, 255, 255)*4)
-
-                        vertices += 1
-
-        self.batch = pyglet.graphics.Batch()
-        self.batch.add(vertices*4,
-                       pyglet.gl.GL_QUADS,
-                       pyglet.graphics.TextureGroup(self.tile_set_bin.get_texture()),
-                       ('v2i', vertex_data),
-                       ('t3f', texture_data),
-                       ('c4B', color_data))
+                        gid = layer.get_gid((x, y))
+                        self.batch.add(4,
+                                       pyglet.gl.GL_QUADS,
+                                       pyglet.graphics.TextureGroup(self.tile_set_bin.get_texture(gid)),
+                       ('v2i', [x1, y2, x2, y2, x2, y1, x1, y1]),
+                       ('t3f', self.tile_set_bin.get_tex_coords(gid)),
+                       ('c4B', (255, 255, 255, 255)*4))
 
     def draw(self):
         self.batch.draw()
@@ -165,19 +156,7 @@ class TileMap(object):
         return tiles
 
     def _add_tiles_to_bin(self, tiles):
-
-        tiles_in_grid = math.ceil(math.sqrt(len(tiles)))
-
-        atlas_width = tiles_in_grid * self.tile_width
-        atlas_height = tiles_in_grid * self.tile_height
-
-        texture_size = 2
-
-        while atlas_width > texture_size and atlas_height > texture_size:
-            texture_size *= 2
-
-        self.tile_set_bin = game.tile_set_bin.TileSetBin(texture_size,
-                                                         texture_size)
+        self.tile_set_bin = game.tile_set_bin.TileSetBin()
 
         for tile in tiles:
             self.tile_set_bin.add(tile)
