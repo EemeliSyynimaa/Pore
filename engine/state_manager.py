@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 __author__ = 'eeneku'
 
 
 class StateManager(object):
-    """ This class handles the states in the game. """
+    """
+    This class handles the states in the game.
+    """
 
     def __init__(self, engine):
         self.engine = engine

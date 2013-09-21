@@ -1,15 +1,22 @@
+# -*- coding: utf-8 -*-
 __author__ = 'eeneku'
-
-from pyglet.window import key
 
 from engine import state
 
+from game import tile_map
+
+
 class WorldMap(state.State):
-    """ The world map state. """
+    """
+    The world map state.
+    """
 
     def __init__(self, manager):
         super(WorldMap, self).__init__(manager)
         self.init_resources()
+
+        self.tile_map = tile_map.TileMap()
+        self.tile_map.load('test_map.json')
 
     def init_resources(self):
         pass
@@ -18,12 +25,8 @@ class WorldMap(state.State):
         pass
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == key.W:
-            print("world_map > local_map")
-            self.manager.push("local_map")
-        elif symbol == key.S:
-            print("world_map > main_menu")
-            self.manager.pop()
+        pass
 
     def on_draw(self):
         self.batch.draw()
+        self.tile_map.draw()

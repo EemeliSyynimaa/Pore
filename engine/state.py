@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 __author__ = 'eeneku'
 
 import pyglet
 
 
 class State(object):
-    """ Scene class! """
+    """
+    This class represents one state (screen) in the game.
+    """
 
     def __init__(self, manager):
         self.manager = manager

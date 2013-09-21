@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
 __author__ = 'eeneku'
 
 import yaml
 import pyglet
 
+
 class ResourceManager(object):
-    """ Class for managing resources. """
+    """
+    Class for managing resources.
+    """
+
     def __init__(self):
         self.data = {}
 

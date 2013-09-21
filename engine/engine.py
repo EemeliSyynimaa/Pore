@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __author__ = 'eeneku'
 
 import pyglet
@@ -6,7 +7,10 @@ import state_manager
 
 
 class Engine(pyglet.window.Window):
-    """ The main engine class. """
+    """
+    The main engine class.
+    """
+
     def __init__(self, *args, **kwargs):
         super(Engine, self).__init__(*args, **kwargs)
         

@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 __author__ = 'eeneku'
-
-from pyglet.window import key
 
 from engine import state
 
+
 class LocalMap(state.State):
-    """ The local map state. """
+    """
+    The local map state.
+    """
 
     def __init__(self, manager):
         super(LocalMap, self).__init__(manager)
@@ -19,13 +21,7 @@ class LocalMap(state.State):
         pass
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == key.W:
-            print("end of line!")
-            print(self.manager.active_states)
-            self.manager.change("main_menu")
-        elif symbol == key.S:
-            print("local_map > world_map")
-            self.manager.pop()
+        pass
 
     def on_draw(self):
         self.batch.draw()
