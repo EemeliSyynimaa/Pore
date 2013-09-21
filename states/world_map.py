@@ -17,6 +17,8 @@ class WorldMap(state.State):
 
         self.tile_map = tile_map.TileMap()
         self.tile_map.load('test_map.json')
+        self.tile_map.set_view(320, 40, 640, 640)
+        self.tile_map.update()
 
     def init_resources(self):
         pass

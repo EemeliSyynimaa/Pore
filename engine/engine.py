@@ -17,7 +17,7 @@ class Engine(pyglet.window.Window):
         self.state_manager = state_manager.StateManager(engine=self)
         self.fps = pyglet.clock.ClockDisplay()
         
-        pyglet.clock.schedule_interval(self.update, 1/120.0)
+        pyglet.clock.schedule(self.update)
 
     def add_resource_path(self, location):
         pyglet.resource.path.append(location)

@@ -32,24 +32,32 @@ class TileMap(object):
 
         self.batch = None
 
-        self.view_x = 0;
+        self.view_x = 0
         self.view_y = 0
-        self.view_width = 512;
-        self.view_height = 512
+        self.view_width = 0
+        self.view_height = 0
 
-    def draw(self):
+        self.world_x = 0
+        self.world_y = 0
 
+    def set_view(self, x, y, width, height):
+        self.view_x = x
+        self.view_y = y
+        self.view_width = width
+        self.view_height = height
+
+    def update(self):
         vertex_data = []
         texture_data = []
         color_data = []
         vertices = 0
 
         for y in range(self.height):
-            y1 = self.tile_height * y
+            y1 = self.view_y + (self.height*self.tile_height) - (self.tile_height * y)
             y2 = y1 - self.tile_height
 
             for x in range(self.width):
-                x1 = self.tile_width * x
+                x1 = self.view_x + self.tile_width * x
                 x2 = x1 + self.tile_width
 
                 for layer in reversed(self.layers):
@@ -68,6 +76,7 @@ class TileMap(object):
                        ('t3f', texture_data),
                        ('c4B', color_data))
 
+    def draw(self):
         self.batch.draw()
 
     def load(self, path):
