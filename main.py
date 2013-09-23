@@ -4,6 +4,7 @@
 __author__ = 'eeneku'
 
 from engine import engine
+from game import runtime_data
 
 import states
 
@@ -34,7 +35,7 @@ class App(object):
         self.engine.state_manager.add('world_map', states.WorldMap)
         self.engine.state_manager.add('main_menu', states.MainMenu)
         self.engine.state_manager.add('local_map', states.LocalMap)
-        self.engine.state_manager.change('world_map')
+        self.engine.state_manager.change('world_map', r_data=runtime_data.RuntimeData())
 
 if __name__ == '__main__':
     app = App()  

@@ -23,7 +23,7 @@ class StateManager(object):
                 
             self.active_states = []
 
-            self.active_states.append(self.states[state](self, self.engine,
+            self.active_states.append(self.states[state](manager=self, engine=self.engine,
                                                          *args, **kwargs))
             self.engine.push_handlers(self.active_states[-1])
             
@@ -32,7 +32,8 @@ class StateManager(object):
             if self.active_states:
                 self.engine.pop_handlers()
                 
-            self.active_states.append(self.states[state](self, *args, **kwargs))
+            self.active_states.append(self.states[state](manager=self, engine=self.engine,
+                                                         *args, **kwargs))
             self.engine.push_handlers(self.active_states[-1])
 
     def pop(self):
