@@ -7,5 +7,6 @@ class Tile(object):
     This class stores data of one tile in tile set.
     """
 
-    def __init__(self, gid):
-        self.gid = gid
+    def __init__(self, texture, type=''):
+        self.texture = texture
+        self.type = type

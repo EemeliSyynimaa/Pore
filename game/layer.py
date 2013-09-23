@@ -20,4 +20,4 @@ class Layer(object):
 
     def get_gid(self, key):
         if self.type == 'tilelayer':
-            return self.data[key].gid
+            return self.data[key]

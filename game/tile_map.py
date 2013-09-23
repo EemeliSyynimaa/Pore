@@ -2,12 +2,22 @@
 __author__ = 'eeneku'
 
 import pyglet
-import math
 import json
 
 import game.layer
-import game.tile
 import game.tile_set_bin
+
+
+class TextureGroup(pyglet.graphics.TextureGroup):
+    def set_state(self):
+        super(TextureGroup, self).set_state()
+
+        pyglet.gl.glTexParameteri(pyglet.gl.GL_TEXTURE_2D,
+                                  pyglet.gl.GL_TEXTURE_MAG_FILTER,
+                                  pyglet.gl.GL_NEAREST)
+        pyglet.gl.glTexParameteri(pyglet.gl.GL_TEXTURE_2D,
+                                  pyglet.gl.GL_TEXTURE_MIN_FILTER,
+                                  pyglet.gl.GL_NEAREST)
 
 
 class TileMap(object):
@@ -46,26 +56,48 @@ class TileMap(object):
         self.view_width = width
         self.view_height = height
 
-    def update_view(self):
+    def draw_world(self):
         self.batch = pyglet.graphics.Batch()
 
         for y in range(self.height):
-            y1 = self.view_y + (self.height*self.tile_height) - (self.tile_height * y)
+            y1 = self.view_y + int(self.world_y) + self.tile_height + self.tile_height * y
             y2 = y1 - self.tile_height
 
             for x in range(self.width):
-                x1 = self.view_x + self.tile_width * x
+                x1 = self.view_x + int(self.world_x) + self.tile_width * x
                 x2 = x1 + self.tile_width
 
                 for layer in reversed(self.layers):
                     if layer.type == 'tilelayer' and (x, y) in layer.data:
                         gid = layer.get_gid((x, y))
+
                         self.batch.add(4,
                                        pyglet.gl.GL_QUADS,
-                                       pyglet.graphics.TextureGroup(self.tile_set_bin.get_texture(gid)),
-                       ('v2i', [x1, y2, x2, y2, x2, y1, x1, y1]),
-                       ('t3f', self.tile_set_bin.get_tex_coords(gid)),
-                       ('c4B', (255, 255, 255, 255)*4))
+                                       TextureGroup(self.tile_set_bin.get_texture(gid)),
+                                       ('v2i', [x1, y2, x2, y2, x2, y1, x1, y1]),
+                                       ('t3f', self.tile_set_bin.get_tex_coords(gid)),
+                                       ('c4B', (255, 255, 255, 255)*4))
+
+    def get_tile_type(self, (x, y), layer):
+        if x >= 0 and y >= 0 and x < self.width*self.tile_width and y < self.height*self.tile_height:
+            return self.tile_set_bin.get_tile_type(self.layers[layer].get_gid((int(x/self.tile_width),
+                                                                               int(y/self.tile_height))))
+        else:
+            return "Position out of bounds"
+
+    def move_map(self, (x, y)):
+        self.world_x += x
+        self.world_y += y
+
+        if self.world_x > 0:
+            self.world_x = 0
+        elif self.world_x < -(self.width*self.tile_width-self.view_width):
+            self.world_x = -(self.width*self.tile_width-self.view_width)
+
+        if self.world_y > 0:
+            self.world_y = 0
+        elif self.world_y < -(self.height*self.tile_height-self.view_height):
+            self.world_y = -(self.height*self.tile_height-self.view_height)
 
     def draw(self):
         self.batch.draw()
@@ -110,8 +142,7 @@ class TileMap(object):
                 if layer_data[i] < 1:
                     continue
 
-                new_layer.data[(col, row)] = game.tile.Tile(layer_data[i]-1)
-
+                new_layer.data[(col, new_layer.height-1-row)] = layer_data[i]-1
                 i += 1
 
     def _load_layer_objects(self, new_layer, layer):
@@ -132,11 +163,15 @@ class TileMap(object):
 
     def _load_tile_sets(self, map_data):
         tiles = []
+        tile_set_properties = {}
 
         for tile_set in map_data['tilesets']:
             tiles.extend(self._load_tiles(tile_set))
 
-        self._add_tiles_to_bin(tiles)
+            if 'tileproperties' in tile_set:
+                tile_set_properties.update(self._load_tile_set_properties(tile_set['tileproperties']))
+
+        self._add_tiles_to_bin(tiles, tile_set_properties)
 
     def _load_tiles(self, tile_set):
         tiles = []
@@ -155,8 +190,22 @@ class TileMap(object):
 
         return tiles
 
-    def _add_tiles_to_bin(self, tiles):
+    def _load_tile_set_properties(self, tile_set_properties):
+        properties = {}
+
+        for key in tile_set_properties:
+            properties[int(key)] = tile_set_properties[key]
+
+        return properties
+
+    def _add_tiles_to_bin(self, tiles, tile_set_properties):
         self.tile_set_bin = game.tile_set_bin.TileSetBin()
 
+        i = 0
         for tile in tiles:
-            self.tile_set_bin.add(tile)
+            if i in tile_set_properties:
+                self.tile_set_bin.add(tile, tile_set_properties[i]['type'])
+            else:
+                self.tile_set_bin.add(tile, '')
+
+            i += 1
