@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 __author__ = 'eeneku'
 
+import random
+
 from pyglet.window import key
 from pyglet import gl
-from pyglet import sprite
 from pyglet.text import Label
 from pyglet import clock
 
@@ -31,12 +32,14 @@ class WorldMap(state.State):
 
         self.entities = []
 
-        self.entity_1 = entity.Entity(self.r_data.res.data['img_wizard'],
-                                      x=224, y=160, batch=self.batch)
+        self.entity_player = entity.Entity(self.r_data.res.data['img_wizard'],
+                                           x=224, y=160, batch=self.batch)
+        self.entity_1 = entity.Entity(self.r_data.res.data['img_orc'],
+                                      x=352, y=224, batch=self.batch)
         self.entity_2 = entity.Entity(self.r_data.res.data['img_orc'],
                                       x=320, y=192, batch=self.batch)
 
-        self.entities.extend([self.entity_1, self.entity_2])
+        self.entities.extend([self.entity_player, self.entity_1, self.entity_2])
 
         self.label = Label('oo!', x=0, y=0)
 
@@ -45,28 +48,36 @@ class WorldMap(state.State):
 
         self.moving = False
 
-        self.entity_1.move_speed = 32
-        self.move_speed = 0.5
+        self.move_speed = 0.25
 
     def init_resources(self):
         self.r_data.res.load_image('img_wizard', 'wizard.png')
         self.r_data.res.load_image('img_orc', 'orc.png')
 
-    def move_entity(self, object, (x, y)):
-        # TODO: Implement a proper moving system and a collision check system!
-        # We should be moving one tile at a time, every unit at the same speed.
-        # No need for fanciness. We just check if the tile we are moving to is free.
+    def move_entities(self, (x, y)):
         self.moving = True
 
-        object.move_x = x
-        object.move_y = y
-        object.target_x = object.x + x * self.tile_map.tile_width
-        object.target_y = object.y + y * self.tile_map.tile_height
+        for entity in self.entities:
+            if entity == self.entity_player:
+                t_x = x
+                t_y = y
+            else:
+                t_x = random.choice([1, 0, -1])
+                if t_x == 0:
+                    t_y = random.choice([1, 0, -1])
+                else:
+                    t_y = 0
 
-        if x != 0:
-            object.move_speed = self.tile_map.tile_width / self.move_speed
-        else:
-            object.move_speed = self.tile_map.tile_height / self.move_speed
+            entity.move_x = t_x
+            entity.move_y = t_y
+
+            entity.target_y = entity.y + t_y * self.tile_map.tile_height
+            entity.target_x = entity.x + t_x * self.tile_map.tile_width
+
+            if t_x != 0:
+                entity.move_speed = self.tile_map.tile_width / self.move_speed
+            elif t_y != 0:
+                entity.move_speed = self.tile_map.tile_height / self.move_speed
 
         clock.schedule_once(self.stop_moving, self.move_speed)
 
@@ -99,13 +110,13 @@ class WorldMap(state.State):
 
         if not self.moving:
             if self.engine.keys[key.W]:
-                self.move_entity(self.entity_1, (0, 1))
+                self.move_entities((0, 1))
             elif self.engine.keys[key.S]:
-                self.move_entity(self.entity_1, (0, -1))
+                self.move_entities((0, -1))
             elif self.engine.keys[key.A]:
-                self.move_entity(self.entity_1, (-1, 0))
+                self.move_entities((-1, 0))
             elif self.engine.keys[key.D]:
-                self.move_entity(self.entity_1, (1, 0))
+                self.move_entities((1, 0))
         else:
             self.make_movements(dt)
 
