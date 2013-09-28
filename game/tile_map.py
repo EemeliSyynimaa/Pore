@@ -78,12 +78,26 @@ class TileMap(object):
                                        ('t3f', self.tile_set_bin.get_tex_coords(gid)),
                                        ('c4B', (255, 255, 255, 255)*4))
 
-    def get_tile_type(self, (x, y), layer):
-        if x >= 0 and y >= 0 and x < self.width*self.tile_width and y < self.height*self.tile_height:
+    def get_tile_type(self, (x, y), layer=0):
+        if self._is_position_on_map_area(x, y):
             return self.tile_set_bin.get_tile_type(self.layers[layer].get_gid((int(x/self.tile_width),
                                                                                int(y/self.tile_height))))
         else:
-            return "Position out of bounds"
+            return "Position outside of map area"
+
+    def has_tile_property(self, (x, y), prop, layer=0):
+        if self._is_position_on_map_area(x, y):
+            return self.tile_set_bin.has_tile_property(self.layers[layer].get_gid((int(x/self.tile_width),
+                                                                                   int(y/self.tile_height))),
+                                                       prop)
+        else:
+            return "Position outside of map area"
+
+    def _is_position_on_map_area(self, x, y):
+        if x >= 0 and x < self.width*self.tile_width and y >= 0 and y < self.height*self.tile_height:
+            return True
+        else:
+            return False
 
     def move_map(self, (x, y)):
         self.world_x += x

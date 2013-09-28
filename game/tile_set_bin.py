@@ -20,6 +20,9 @@ class TileSetBin(object):
         else:
             return None
 
+    def has_tile_property(self, gid, prop):
+        return prop in self.tiles[gid].properties
+
     def get_tex_coords(self, gid):
         return self.tiles[gid].texture.tex_coords
 

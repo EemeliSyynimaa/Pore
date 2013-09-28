@@ -71,7 +71,7 @@ class WorldMap(state.State):
             new_target_y = ent.y + new_y * self.tile_map.tile_height
             new_target_x = ent.x + new_x * self.tile_map.tile_width
 
-            if self.tile_map.get_tile_type((new_target_x, new_target_y), 0) == 'floor':
+            if self.tile_map.has_tile_property((new_target_x, new_target_y), 'floor', 0):
                 ent.move_x = new_x
                 ent.move_y = new_y
 
