@@ -48,7 +48,7 @@ class WorldMap(state.State):
 
         self.moving = False
 
-        self.move_speed = 0.25
+        self.move_speed = 0.375
 
     def init_resources(self):
         self.r_data.res.load_image('img_wizard', 'wizard.png')
@@ -57,41 +57,50 @@ class WorldMap(state.State):
     def move_entities(self, (x, y)):
         self.moving = True
 
-        for entity in self.entities:
-            if entity == self.entity_player:
-                t_x = x
-                t_y = y
+        for ent in self.entities:
+            if ent == self.entity_player:
+                new_x = x
+                new_y = y
             else:
-                t_x = random.choice([1, 0, -1])
-                if t_x == 0:
-                    t_y = random.choice([1, 0, -1])
+                new_x = random.choice([1, 0, -1])
+                if new_x == 0:
+                    new_y = random.choice([1, 0, -1])
                 else:
-                    t_y = 0
+                    new_y = 0
 
-            entity.move_x = t_x
-            entity.move_y = t_y
+            new_target_y = ent.y + new_y * self.tile_map.tile_height
+            new_target_x = ent.x + new_x * self.tile_map.tile_width
 
-            entity.target_y = entity.y + t_y * self.tile_map.tile_height
-            entity.target_x = entity.x + t_x * self.tile_map.tile_width
+            if self.tile_map.get_tile_type((new_target_x, new_target_y), 0) == 'floor':
+                ent.move_x = new_x
+                ent.move_y = new_y
 
-            if t_x != 0:
-                entity.move_speed = self.tile_map.tile_width / self.move_speed
-            elif t_y != 0:
-                entity.move_speed = self.tile_map.tile_height / self.move_speed
+                ent.target_x = new_target_x
+                ent.target_y = new_target_y
+
+                if new_x != 0:
+                    ent.move_speed = self.tile_map.tile_width / self.move_speed
+                elif new_y != 0:
+                    ent.move_speed = self.tile_map.tile_height / self.move_speed
+            else:
+                ent.move_x = 0
+                ent.move_y = 0
+                ent.move_speed = 0
 
         clock.schedule_once(self.stop_moving, self.move_speed)
 
     def stop_moving(self, dt):
         self.moving = False
 
-        for entity in self.entities:
-            entity.x = entity.target_x
-            entity.y = entity.target_y
+        for ent in self.entities:
+            if ent.move_speed > 0:
+                ent.x = ent.target_x
+                ent.y = ent.target_y
 
     def make_movements(self, dt):
-        for entity in self.entities:
-            entity.x += entity.move_x * entity.move_speed * dt
-            entity.y += entity.move_y * entity.move_speed * dt
+        for ent in self.entities:
+            ent.x += ent.move_x * ent.move_speed * dt
+            ent.y += ent.move_y * ent.move_speed * dt
 
     def update(self, dt):
         self.label.text = self.tile_map.get_tile_type((self.mouse_x-self.tile_map.world_x,
