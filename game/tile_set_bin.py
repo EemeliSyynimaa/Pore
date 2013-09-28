@@ -11,11 +11,14 @@ class TileSetBin(object):
     def __init__(self):
         self.tiles = []
 
-    def add(self, image, type):
-        self.tiles.append(game.tile.Tile(image.get_texture(), type))
+    def add(self, image, properties={}):
+        self.tiles.append(game.tile.Tile(image.get_texture(), properties))
 
     def get_tile_type(self, gid):
-        return self.tiles[gid].type
+        if 'type' in self.tiles[gid].properties:
+            return self.tiles[gid].properties['type']
+        else:
+            return None
 
     def get_tex_coords(self, gid):
         return self.tiles[gid].texture.tex_coords

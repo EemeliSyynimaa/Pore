@@ -204,8 +204,8 @@ class TileMap(object):
         i = 0
         for tile in tiles:
             if i in tile_set_properties:
-                self.tile_set_bin.add(tile, tile_set_properties[i]['type'])
+                self.tile_set_bin.add(tile, tile_set_properties[i])
             else:
-                self.tile_set_bin.add(tile, '')
+                self.tile_set_bin.add(tile)
 
             i += 1
