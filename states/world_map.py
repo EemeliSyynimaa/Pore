@@ -61,11 +61,26 @@ class WorldMap(state.State):
             new_group.x = random.randint(0, self.tile_map.tile_width) * self.tile_map.tile_width
             new_group.y = random.randint(0, self.tile_map.tile_height) * self.tile_map.tile_height
 
-            while not self.tile_map.has_tile_property((new_group.x, new_group.y), 'floor', 0):
+            while not self.tile_map.has_tile_property((new_group.x, new_group.y), 'floor', 0) and \
+                    not self.is_location_free((new_group.x, new_group.y)):
                 new_group.x = random.randint(0, self.tile_map.tile_width) * self.tile_map.tile_width
                 new_group.y = random.randint(0, self.tile_map.tile_height) * self.tile_map.tile_height
 
             self.groups.append(new_group)
+
+    def is_location_free(self, (x, y)):
+        for group in self.groups:
+            if group.x == x and group.y == y:
+                return group
+
+    def handle_collision(self, (group_1, group_2)):
+        print("Collision happened between " + str(group_1) + " and " + str(group_2))
+
+    def check_collisions(self):
+        for i in xrange(len(self.groups)):
+            for j in xrange(i+1, len(self.groups)):
+                if self.groups[i].x == self.groups[j].x and self.groups[i].y == self.groups[j].y:
+                    self.handle_collision((self.groups[i], self.groups[j]))
 
     def move_groups(self, (x, y)):
         self.moving = True
@@ -109,6 +124,8 @@ class WorldMap(state.State):
             if group.move_speed > 0:
                 group.x = group.target_x
                 group.y = group.target_y
+
+        self.check_collisions()
 
     def apply_movements(self, dt):
         for group in self.groups:
