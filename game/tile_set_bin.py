@@ -18,7 +18,7 @@ class TileSetBin(object):
         if 'type' in self.tiles[gid].properties:
             return self.tiles[gid].properties['type']
         else:
-            return None
+            return ''
 
     def has_tile_property(self, gid, prop):
         return prop in self.tiles[gid].properties

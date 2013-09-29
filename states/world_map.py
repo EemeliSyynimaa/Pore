@@ -30,16 +30,15 @@ class WorldMap(state.State):
         self.tile_map.draw_world()
         self.tile_map.set_view(0, 0, self.engine.width, self.engine.height)
 
-        self.entities = []
+        self.groups = []
 
-        self.entity_player = entity.Entity(self.r_data.res.data['img_wizard'],
-                                           x=224, y=160, batch=self.batch)
-        self.entity_1 = entity.Entity(self.r_data.res.data['img_orc'],
-                                      x=352, y=224, batch=self.batch)
-        self.entity_2 = entity.Entity(self.r_data.res.data['img_orc'],
-                                      x=320, y=192, batch=self.batch)
+        self.player_group = entity.Entity(self.r_data.res.data['img_wizard'],
+                                          x=224, y=160, batch=self.batch)
 
-        self.entities.extend([self.entity_player, self.entity_1, self.entity_2])
+        self.groups.append(self.player_group)
+
+        self.number_of_groups = random.randint(1, 20)
+        self.init_npc_groups()
 
         self.label = Label('oo!', x=0, y=0)
 
@@ -54,11 +53,25 @@ class WorldMap(state.State):
         self.r_data.res.load_image('img_wizard', 'wizard.png')
         self.r_data.res.load_image('img_orc', 'orc.png')
 
-    def move_entities(self, (x, y)):
+    def init_npc_groups(self):
+        for i in range(self.number_of_groups):
+            new_group = entity.Entity(img=self.r_data.res.data[random.choice(['img_wizard', 'img_orc'])],
+                                      batch=self.batch)
+
+            new_group.x = random.randint(0, self.tile_map.tile_width) * self.tile_map.tile_width
+            new_group.y = random.randint(0, self.tile_map.tile_height) * self.tile_map.tile_height
+
+            while not self.tile_map.has_tile_property((new_group.x, new_group.y), 'floor', 0):
+                new_group.x = random.randint(0, self.tile_map.tile_width) * self.tile_map.tile_width
+                new_group.y = random.randint(0, self.tile_map.tile_height) * self.tile_map.tile_height
+
+            self.groups.append(new_group)
+
+    def move_groups(self, (x, y)):
         self.moving = True
 
-        for ent in self.entities:
-            if ent == self.entity_player:
+        for group in self.groups:
+            if group == self.player_group:
                 new_x = x
                 new_y = y
             else:
@@ -68,39 +81,39 @@ class WorldMap(state.State):
                 else:
                     new_y = 0
 
-            new_target_y = ent.y + new_y * self.tile_map.tile_height
-            new_target_x = ent.x + new_x * self.tile_map.tile_width
+            new_target_y = group.y + new_y * self.tile_map.tile_height
+            new_target_x = group.x + new_x * self.tile_map.tile_width
 
             if self.tile_map.has_tile_property((new_target_x, new_target_y), 'floor', 0):
-                ent.move_x = new_x
-                ent.move_y = new_y
+                group.move_x = new_x
+                group.move_y = new_y
 
-                ent.target_x = new_target_x
-                ent.target_y = new_target_y
+                group.target_x = new_target_x
+                group.target_y = new_target_y
 
                 if new_x != 0:
-                    ent.move_speed = self.tile_map.tile_width / self.move_speed
+                    group.move_speed = self.tile_map.tile_width / self.move_speed
                 elif new_y != 0:
-                    ent.move_speed = self.tile_map.tile_height / self.move_speed
+                    group.move_speed = self.tile_map.tile_height / self.move_speed
             else:
-                ent.move_x = 0
-                ent.move_y = 0
-                ent.move_speed = 0
+                group.move_x = 0
+                group.move_y = 0
+                group.move_speed = 0
 
         clock.schedule_once(self.stop_moving, self.move_speed)
 
     def stop_moving(self, dt):
         self.moving = False
 
-        for ent in self.entities:
-            if ent.move_speed > 0:
-                ent.x = ent.target_x
-                ent.y = ent.target_y
+        for group in self.groups:
+            if group.move_speed > 0:
+                group.x = group.target_x
+                group.y = group.target_y
 
-    def make_movements(self, dt):
-        for ent in self.entities:
-            ent.x += ent.move_x * ent.move_speed * dt
-            ent.y += ent.move_y * ent.move_speed * dt
+    def apply_movements(self, dt):
+        for group in self.groups:
+            group.x += group.move_x * group.move_speed * dt
+            group.y += group.move_y * group.move_speed * dt
 
     def update(self, dt):
         self.label.text = self.tile_map.get_tile_type((self.mouse_x-self.tile_map.world_x,
@@ -119,15 +132,15 @@ class WorldMap(state.State):
 
         if not self.moving:
             if self.engine.keys[key.W]:
-                self.move_entities((0, 1))
+                self.move_groups((0, 1))
             elif self.engine.keys[key.S]:
-                self.move_entities((0, -1))
+                self.move_groups((0, -1))
             elif self.engine.keys[key.A]:
-                self.move_entities((-1, 0))
+                self.move_groups((-1, 0))
             elif self.engine.keys[key.D]:
-                self.move_entities((1, 0))
+                self.move_groups((1, 0))
         else:
-            self.make_movements(dt)
+            self.apply_movements(dt)
 
     def on_key_press(self, symbol, modifiers):
         pass
