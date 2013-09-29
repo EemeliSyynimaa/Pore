@@ -74,7 +74,8 @@ class WorldMap(state.State):
                 return group
 
     def handle_collision(self, (group_1, group_2)):
-        print("Collision happened between " + str(group_1) + " and " + str(group_2))
+        dialog = __import__("dialog", fromlist=[group_1.dialog])
+        dialog.__dict__[group_1.dialog].say_something()
 
     def check_collisions(self):
         for i in xrange(len(self.groups)):

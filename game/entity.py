@@ -20,3 +20,5 @@ class Entity(sprite.Sprite):
 
         self.move_speed = 0
 
+        self.dialog = 'test'
+
